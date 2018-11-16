@@ -35,7 +35,10 @@ $System_Config['inviteNum'] = '0';
 
 # database 数据库配置
 $System_Config['db_driver'] = 'mysql';
-
+$System_Config['db_host'] = getenv('MYSQL_HOST');
+$System_Config['db_database'] = getenv('MYSQL_DB');
+$System_Config['db_username'] = getenv('MYSQL_USERNAME');
+$System_Config['db_password'] = getenv('MYSQL_PASSWORD');
 $System_Config['db_charset'] = 'utf8';
 $System_Config['db_collation'] = 'utf8_general_ci';
 $System_Config['db_prefix'] = '';
