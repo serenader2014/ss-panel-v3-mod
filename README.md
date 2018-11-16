@@ -19,12 +19,6 @@ docker run --name mysql -d --restart always \
   mysql:5.5
 ```
 
-### 运行 redis 容器
-
-```bash
-
-```
-
 ### 初始化数据
 
 ```bash
@@ -36,8 +30,8 @@ docker exec -it mysql /bin/bash -c "mysql -u root -p$MYSQL_ROOT_PASSWORD $SS_DB_
 
 ```bash
 docker run --name ss-panel -p 7000:80 \
-    -e APP_NAME=ss -e KEY=sspanel -e BASE_URL=la.serenader.me:7000 -e MYSQL_HOST=mysql \
-    -e MYSQL_DB=$SS_DB_NAME -e MYSQL_USERNAME=root -e MYSQL_PASSWORD=$MYSQL_PASSWORD serenader/ss-panel-v3-mod
+    -e APP_NAME=$APP_NAME -e KEY=$KEY -e BASE_URL=$BASE_URL -e MYSQL_HOST=mysql \
+    -e MYSQL_DB=$SS_DB_NAME -e MYSQL_USERNAME=root -e MYSQL_PASSWORD=$MYSQL_ROOT_PASSWORD serenader/ss-panel-v3-mod
 ```
 
 ### 创建管理员账号
