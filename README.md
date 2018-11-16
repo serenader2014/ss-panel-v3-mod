@@ -1,32 +1,64 @@
-# 介绍
+# 运行
 
-一个修改的 ss panel 版本，多了蛮多新东西。
+### 安装 docker 
 
-# 准备
+```bash
+curl -L get.docker.io | bash
+```
 
-1.一台 VPS
+### 运行 mysql 容器
 
-# 环境
+```bash
+curl -L -O https://raw.githubusercontent.com/serenader2014/ss-panel-v3-mod/new_master/sql/glzjin_all.sql
+mv glzjin_all.sql /etc/mysql
 
-1.PHP 5.6 + (推荐 PHP 7.1.1)
-2.MYSQL 5.5 + 
-3.以及安装和配置过程中涉及到的种种东西。
+docker run --name mysql -d --restart always \
+  -v /etc/mysql:/var/lib/mysql \
+  -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD \
+  -p 3306:3306 \
+  mysql:5.5
+```
 
-# 安装
+### 运行 redis 容器
 
-[https://github.com/esdeathlove/ss-panel-v3-mod/wiki/%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E](https://github.com/esdeathlove/ss-panel-v3-mod/wiki/%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E)
+```bash
 
-# FAQ
+```
 
-[https://github.com/esdeathlove/ss-panel-v3-mod/wiki/FAQ](https://github.com/esdeathlove/ss-panel-v3-mod/wiki/FAQ)
+### 初始化数据
 
-# 遇到问题？
+```bash
+docker exec -it mysql /bin/bash -c "mysqladmin -p$MYSQL_ROOT_PASSWORD create $SS_DB_NAME"
+docker exec -it mysql /bin/bash -c "mysql -u root -p$MYSQL_ROOT_PASSWORD $SS_DB_NAME < /var/lib/mysql/glzjin_all.sql"
+```
 
-不好意思，使用上的，比如说你不会使用，请自行看现在已有的[说明](https://github.com/esdeathlove/ss-panel-v3-mod/wiki/)以及自行琢磨。
+### 运行 ss-panel-v3-mod 容器
 
-如果你发现了你认为你实在无法解决的问题，请在 [https://github.com/esdeathlove/ss-panel-v3-mod/issues](https://github.com/esdeathlove/ss-panel-v3-mod/issues) 按照所提示的 issue 模板，进行反馈以及获得解决方案。发送 issue 之前请三思，不恰当的内容可能会造成你之后都无法获得回应。
+```bash
+docker run --name ss-panel -p 7000:80 \
+    -e APP_NAME=ss -e KEY=sspanel -e BASE_URL=la.serenader.me:7000 -e MYSQL_HOST=mysql \
+    -e MYSQL_DB=$SS_DB_NAME -e MYSQL_USERNAME=root -e MYSQL_PASSWORD=$MYSQL_PASSWORD serenader/ss-panel-v3-mod
+```
 
-# 最新消息获取
+### 创建管理员账号
 
-[Telegram频道 glzjinmodnews](https://t.me/glzjinmodnews)
+```bash
+docker exec -it ss-panel php -n /var/www/html/xcat createAdmin
+```
 
+
+### 运行 ssserver
+
+```bash
+docker run -d --name ss-many --restart always \
+    --network host \
+    -e NODE_ID=$NODE_ID \
+    -e MYSQL_HOST=$MYSQL_HOST \
+    -e MYSQL_PORT=$MYSQL_PORT \
+    -e MYSQL_USER=$MYSQL_USER \
+    -e MYSQL_PASS=$MYSQL_PASS \
+    -e MYSQL_DB=$MYSQL_DB \
+    serenader/ss-manyuser-docker
+```
+
+NODE_ID 的值可以从 ss-panel-v3-mod 上创建一个新节点得到一个新的 ID。 mysql 连接信息则为 mysql 容器的连接信息

@@ -45,10 +45,10 @@ $System_Config['db_prefix'] = '';
 
 # redis
 $System_Config['redis_scheme'] = 'tcp';
-$System_Config['redis_host'] = getenv('REDIS_HOST');
-$System_Config['redis_port'] = getenv('REDIS_PORT');
-$System_Config['redis_database'] = getenv('REDIS_DB');
-$System_Config['redis_password'] = getenv('REDIS_PASSWORD');
+$System_Config['redis_host'] = 'localhost';
+$System_Config['redis_port'] = 6379;
+$System_Config['redis_database'] = '0';
+$System_Config['redis_password'] = '';
 
 # mailgun
 $System_Config['mailgun_key'] = '';
